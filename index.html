@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Creation</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #001f3f; /* Dark Blue Background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background: #f3f3f3; /* Light Grey Background */
+      padding: 30px 40px;
+      border-radius: 10px;
+      border: 2px solid #007bff; /* Blue Border */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      position: relative; /* To place the toggle switch inside the container */
+    }
+
+    .form-container img {
+      max-width: 100px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #001f3f;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .email-container {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 5px 10px;
+      box-sizing: border-box;
+    }
+
+    .email-container:focus-within {
+      border-color: #007bff;
+    }
+
+    .email-container input {
+      border: none;
+      outline: none;
+      font-size: 16px;
+      flex: 1;
+      padding: 5px;
+    }
+
+    .email-container span {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    #loading {
+      margin-top: 15px;
+      color: #555;
+      display: none;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #details {
+      margin-top: 10px;
+      font-size: 14px;
+      text-align: center;
+      color: #333;
+    }
+
+    /* Style for the toggle switch at the top-right corner */
+    .switch-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    /* Custom style for the toggle switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      border-radius: 50%;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+    }
+
+    input:checked + .slider {
+      background-color: #007bff;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Popup modal style */
+    #keyPopup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+      width: 300px;
+    }
+
+    .popup-content input {
+      margin-top: 10px;
+      padding: 8px;
+      font-size: 16px;
+      width: 80%;
+    }
+
+    .popup-content button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    /* Bottom buttons */
+    .bottom-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .bottom-buttons button {
+      width: 48%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .bottom-buttons button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <img src="https://i.ibb.co/grwTQZ0/5968534.png" alt="Logo">
+    <h2>Create Account</h2>
+
+    <!-- On/Off Switch at the top-right corner -->
+    <div class="switch-container">
+      <label class="switch">
+        <input type="checkbox" id="toggleSwitch" disabled>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Popup for key entry -->
+    <div id="keyPopup">
+      <div class="popup-content">
+        <h3>Enter Key to Enable Switch</h3>
+        <input type="text" id="key" placeholder="Enter key" />
+        <button id="enableSwitch">Submit Key</button>
+      </div>
+    </div>
+
+    <form id="accountForm">
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="email-container">
+          <input type="text" id="username" placeholder="Enter username" required>
+          <span>@gmail.com</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+      </div>
+      <button type="submit" class="btn">Create Account</button>
+    </form>
+    <p id="loading">Creating account...</p>
+    <p id="message"></p>
+    <div id="details"></div>
+
+    <!-- Bottom buttons -->
+    <div class="bottom-buttons">
+      <button onclick="playHowToWork()">How to Work</button>
+      <button onclick="playButtonSound()">Live Chat</button>
+    </div>
+  </div>
+
+  <script>
+    let switchEnabled = false;
+    const correctKey = "1234"; // Correct key for enabling the switch
+
+    // Show the key entry popup when the toggle switch is clicked
+    document.getElementById('toggleSwitch').addEventListener('click', function() {
+      if (!switchEnabled) {
+        document.getElementById('keyPopup').style.display = 'flex';
+      }
+    });
+
+    // Enable the switch if correct key is entered
+    document.getElementById('enableSwitch').addEventListener('click', function() {
+      const enteredKey = document.getElementById('key').value;
+      if (enteredKey === correctKey) {
+        switchEnabled = true;
+        document.getElementById('toggleSwitch').disabled = false;
+        document.getElementById('keyPopup').style.display = 'none';
+      } else {
+        alert("Incorrect key! Please try again.");
+      }
+    });
+
+    // Handle form submission and validate switch
+    document.getElementById('accountForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!switchEnabled) {
+        document.getElementById('message').style.color = 'red';
+        document.getElementById('message').textContent = 'Sorry, please enable the switch above to create an account.';
+        return;
+      }
+
+      const audio = new Audio('button.mp3');
+      audio.play();
+
+      const username = document.getElementById('username').value.trim();
+      const email = username + '@gmail.com';
+      const dob = document.getElementById('dob').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      const loading = document.getElementById('loading');
+      const message = document.getElementById('message');
+      const details = document.getElementById('details');
+
+      const today = new Date();
+      const birthDate = new Date(dob);
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      if (age < 15) {
+        message.style.color = 'red';
+        message.textContent = 'You must be at least 15 years old to create an account.';
+        details.innerHTML = '';
+        return;
+      }
+
+      if (password.length < 8) {
+        message.style.color = 'red';
+        message.textContent = 'Password must be at least 8 characters long.';
+        details.innerHTML = '';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        message.style.color = 'red';
+        message.textContent = 'Passwords do not match!';
+        details.innerHTML = '';
+        return;
+      }
+
+      loading.style.display = 'block';
+      message.textContent = '';
+      details.innerHTML = '';
+
+      setTimeout(() => {
+        loading.style.display = 'none';
+        message.style.color = 'green';
+        message.textContent = 'Account created successfully!';
+        details.innerHTML = `
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Password:</strong> ${password}</p>
+        `;
+      }, 3000);
+    });
+
+    // Play the "How to Work" video
+    function playHowToWork() {
+      const video = document.createElement('video');
+      video.src = 'work.mp4';
+      video.controls = true;
+      document.body.appendChild(video);
+      video.play();
+    }
+
+    // Play the sound when the "Live Chat" button is clicked
+    function playButtonSound() {
+      const audio = new Audio('button.mp3');
+      audio.play();
+    }
+  </script>
+</body>
+</html>
